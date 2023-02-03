@@ -12,6 +12,7 @@ export default function App() {
     [picture, setPicture] = useState(""),
     [type, setType] = useState(""),
     [stat, setStat] = useState(""),
+    [shiny, setShiny] = useState(false),
     [generation, setGeneration] = useState("first"),
     [bright, setBright] = useState(0),
     [hint, setHint] = useState(0),
@@ -22,9 +23,10 @@ export default function App() {
       localStorage.setItem("pokeData", JSON.stringify(pokeData));
     }
     setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
-  }, [pokeDex]);
+  }, []);
 
   const fetchPokemon = async () => {
+    const localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${
         generation === "first"
@@ -41,11 +43,27 @@ export default function App() {
       } else {
         setName(data.name);
       }
-      setPicture(data.sprites.front_default);
+
+      localPokeDex.forEach((pokemon) => {
+        if (pokemon.name === name) {
+          if (!pokemon.regular) {
+            setShiny(false);
+            setBright(0);
+            setHint(0);
+          } else if (!pokemon.shiny) {
+            setShiny(true);
+            setBright(0);
+            setHint(0);
+          } else {
+            setBright(1);
+            setHint(2);
+          }
+        }
+      });
+      setPicture(shiny ? data.sprites.shiny_front : data.sprites.front_default);
       setType(data.types);
       setStat(data.stats);
-      setHint(0);
-      setGuessText("");
+      setGuessText(() => "");
     }
     console.log(data);
   };
@@ -60,6 +78,7 @@ export default function App() {
         }
       });
       localStorage.setItem("pokeData", JSON.stringify(data));
+      setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
       console.log("correct", "set local storage to true");
     }
   };
@@ -132,6 +151,15 @@ export default function App() {
                 <div className="guessButtons form-group">
                   <button
                     className="btn"
+                    type="submit"
+                    onClick={() => guess(guessText)}
+                  >
+                    <span aria-label="check mark" role="img">
+                      &#10004;
+                    </span>
+                  </button>
+                  <button
+                    className="btn"
                     onClick={() => {
                       setHint((prev) => prev + 1);
                     }}
@@ -139,15 +167,6 @@ export default function App() {
                   >
                     <span aria-label="?" role="img">
                       &#10068;
-                    </span>
-                  </button>
-                  <button
-                    className="btn"
-                    type="submit"
-                    onClick={() => guess(guessText)}
-                  >
-                    <span aria-label="check mark" role="img">
-                      &#10004;
                     </span>
                   </button>
                 </div>
