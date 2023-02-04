@@ -14,7 +14,7 @@ export default function App() {
     [stat, setStat] = useState(""),
     [shiny, setShiny] = useState(false),
     [generation, setGeneration] = useState("first"),
-    [bright, setBright] = useState(0),
+    [bright, setBright] = useState(1),
     [hint, setHint] = useState(0),
     [guessText, setGuessText] = useState("");
 
@@ -34,6 +34,7 @@ export default function App() {
           : Math.floor(Math.random() * 100) + 151
       }`
     );
+
     const data = await response.json();
     if (data) {
       if (data.name === "nidoran-m" || data.name === "nidoran-f") {
@@ -44,7 +45,7 @@ export default function App() {
         setName(data.name);
       }
 
-      localPokeDex.forEach((pokemon) => {
+      await localPokeDex.forEach((pokemon) => {
         if (pokemon.name === name) {
           if (!pokemon.regular) {
             setShiny(false);
@@ -58,12 +59,18 @@ export default function App() {
             setBright(1);
             setHint(2);
           }
+
+          if (shiny) {
+            setPicture(data.sprites.front_shiny);
+          } else {
+            setPicture(data.sprites.front_default);
+          }
+          setType(data.types);
+          setStat(data.stats);
+          setGuessText(() => "");
+          setBright(0);
         }
       });
-      setPicture(shiny ? data.sprites.shiny_front : data.sprites.front_default);
-      setType(data.types);
-      setStat(data.stats);
-      setGuessText(() => "");
     }
     console.log(data);
   };
@@ -79,19 +86,17 @@ export default function App() {
       });
       localStorage.setItem("pokeData", JSON.stringify(data));
       setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
+      setHint(2);
       console.log("correct", "set local storage to true");
     }
   };
 
   return (
     <div className="App">
-      <h1
-        className="title d-flex align-items-center m-auto justify-content-center"
-        onClick={fetchPokemon}
+      <div
+        id="pokeDex"
+        className="container-fluid align-items-center row m-auto"
       >
-        POKÉGUESS
-      </h1>
-      <div id="pokeDex" className="container m-auto align-items-center row p-5">
         <div id="pokeDexBodyLeft" className="bg-danger col p-0">
           <div id="lensHolder" className="sm-col d-flex">
             <div id="lensOuter" className="my-3">
@@ -99,17 +104,17 @@ export default function App() {
                 <div id="lensFlare"></div>
               </div>
             </div>
-            <div className="lensOuter my-auto">
+            <div className="lensOuter mt-3">
               <div className="lensInner" style={{ backgroundColor: "#FF1B32" }}>
                 <div id="lensFlare"></div>
               </div>
             </div>
-            <div className="lensOuter my-auto">
+            <div className="lensOuter mt-3">
               <div className="lensInner" style={{ backgroundColor: "#ffd639" }}>
                 <div id="lensFlare"></div>
               </div>
             </div>
-            <div className="lensOuter my-auto">
+            <div className="lensOuter mt-3">
               <div className="lensInner" style={{ backgroundColor: "#00af54" }}>
                 <div id="lensFlare"></div>
               </div>
@@ -122,7 +127,12 @@ export default function App() {
                 <img
                   className="pokePic"
                   alt="A random pokemon"
-                  style={{ filter: `brightness(${bright})` }}
+                  style={{
+                    filter: `brightness(${bright})`,
+                    animation: `${
+                      picture ? "" : "pokeball"
+                    } 2s infinite alternate`,
+                  }}
                   src={picture ? picture : pokeball}
                 />
               </div>
@@ -146,27 +156,28 @@ export default function App() {
                     placeholder="Whos that Pokemon..."
                     className="form-control"
                     onChange={(e) => setGuessText(e.target.value)}
+                    value={guessText}
                   />
                 </div>
                 <div className="guessButtons form-group">
                   <button
-                    className="btn"
+                    className="btn m-2"
                     type="submit"
                     onClick={() => guess(guessText)}
                   >
-                    <span aria-label="check mark" role="img">
-                      &#10004;
+                    <span aria-label="check mark" role="img" id="emote">
+                      &#10004; CHECK
                     </span>
                   </button>
                   <button
-                    className="btn"
+                    className="btn m-2"
                     onClick={() => {
                       setHint((prev) => prev + 1);
                     }}
                     disabled={hint >= 2 ? true : false}
                   >
-                    <span aria-label="?" role="img">
-                      &#10068;
+                    <span aria-label="?" role="img" id="emote">
+                      &#10068; HINT
                     </span>
                   </button>
                 </div>
@@ -175,7 +186,14 @@ export default function App() {
           </div>
         </div>
         <div id="pokeDexBodyRight" className="col p-0">
-          <div id="blank"></div>
+          <div
+            id="blank"
+            className="d-flex align-items-center justify-content-center"
+          >
+            <h1 className="title" onClick={fetchPokemon}>
+              <span id="poke">POKÉ</span>GUESS
+            </h1>
+          </div>
           <div id="recessedRight">
             <div id="dataScreen" className="row m-auto">
               <div className="col p-0 border-end border-dark">
@@ -239,22 +257,22 @@ export default function App() {
                 className="col-sm-12 mt-2 btn"
                 onClick={fetchPokemon}
               >
-                Encounter
+                ENCOUNTER
               </button>
               <button id="systemButton" className="col-sm-3  m-1 btn">
-                Collection
+                COLLECTION
               </button>
               <button
                 id="systemButton"
                 className="col-sm-3 systemButton m-1 btn"
               >
-                About
+                ABOUT
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="row m-3 pokeCollection">
+      <div className="row m-0 p-5 pokeCollection">
         {pokeDex.map((ele) => {
           return (
             <SpriteBox

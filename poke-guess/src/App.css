@@ -3,15 +3,24 @@
 .App {
   font-family: "Teko", sans-serif;
   text-align: center;
+  background-image: url(./assets/grassPokemonBackground.png);
 }
 
 .title {
-  height: 10vh;
-  font-size: 300%;
+  font-size: 500%;
 }
 
+#poke {
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke: 2px black;
+}
 #pokeDex {
-  height: 90vh;
+  height: 100vh;
+  width: 70%;
+  padding-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 5%;
 }
 
 #pokeDexBodyLeft {
@@ -121,6 +130,10 @@
   height: 100%;
 }
 
+#emote {
+  font-size: 1.5em;
+}
+
 #recessedRight {
   width: 95%;
   height: 77%;
@@ -170,11 +183,13 @@
 }
 
 #operationButton {
+  font-size: xx-large;
   border: 2px solid black;
   background-color: rgb(144, 165, 131);
 }
 
 #systemButton {
+  font-size: large;
   border: 2px solid black;
   width: 40%;
   background-color: rgba(253, 225, 45);
@@ -185,13 +200,28 @@
   height: 100%;
 }
 
+@keyframes pokeball {
+  0% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(5deg);
+  }
+}
+
 .pokeCollection {
-  height: 90vh;
+  height: 100vh;
+  width: 100%;
   overflow: scroll;
+  background-image: url(./assets/homePokemonBackground.png);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 .pokeCollection::-webkit-scrollbar {
   display: none;
+}
+
+.spriteBox {
+  background-color: rgba(240, 248, 255, 0.774);
 }

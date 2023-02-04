@@ -1,6 +1,6 @@
 const SpriteBox = (props) => {
   return (
-    <div className="col-sm-3 spriteBox border border rounded">
+    <div className="col-sm-3  spriteBox border border rounded">
       <img
         src={props.img}
         style={{ filter: `brightness(${props.img_bool ? 1 : 0})` }}
