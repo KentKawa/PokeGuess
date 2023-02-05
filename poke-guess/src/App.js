@@ -8,8 +8,9 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [pokeDex, setPokeDex] = useState([]),
+    [fetchedPokemon, setFetchedPokemon] = useState(),
     [name, setName] = useState(""),
-    [picture, setPicture] = useState(""),
+    [picture, setPicture] = useState(pokeball),
     [type, setType] = useState(""),
     [stat, setStat] = useState(""),
     [shiny, setShiny] = useState(false),
@@ -23,10 +24,32 @@ export default function App() {
       localStorage.setItem("pokeData", JSON.stringify(pokeData));
     }
     setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
-  }, []);
+    const localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
+    if (fetchedPokemon) {
+      localPokeDex.forEach((pokemon) => {
+        if (pokemon.name === name) {
+          if (!pokemon.regular) {
+            setShiny(() => false);
+            setPicture(fetchedPokemon.sprites.front_default);
+            setBright(0);
+            setHint(0);
+          } else if (!pokemon.shiny) {
+            setShiny(() => true);
+            setPicture(fetchedPokemon.sprites.front_shiny);
+            setBright(0);
+            setHint(0);
+          } else {
+            setShiny(() => false);
+            setPicture(fetchedPokemon.sprites.front_default);
+            setBright(1);
+            setHint(2);
+          }
+        }
+      });
+    }
+  }, [name, fetchedPokemon]);
 
   const fetchPokemon = async () => {
-    const localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${
         generation === "first"
@@ -34,8 +57,8 @@ export default function App() {
           : Math.floor(Math.random() * 100) + 151
       }`
     );
-
     const data = await response.json();
+    setFetchedPokemon(data);
     if (data) {
       if (data.name === "nidoran-m" || data.name === "nidoran-f") {
         setName("nidoran");
@@ -44,33 +67,9 @@ export default function App() {
       } else {
         setName(data.name);
       }
-
-      await localPokeDex.forEach((pokemon) => {
-        if (pokemon.name === name) {
-          if (!pokemon.regular) {
-            setShiny(false);
-            setBright(0);
-            setHint(0);
-          } else if (!pokemon.shiny) {
-            setShiny(true);
-            setBright(0);
-            setHint(0);
-          } else {
-            setBright(1);
-            setHint(2);
-          }
-
-          if (shiny) {
-            setPicture(data.sprites.front_shiny);
-          } else {
-            setPicture(data.sprites.front_default);
-          }
-          setType(data.types);
-          setStat(data.stats);
-          setGuessText(() => "");
-          setBright(0);
-        }
-      });
+      setType(data.types);
+      setStat(data.stats);
+      setGuessText(() => "");
     }
     console.log(data);
   };
@@ -78,16 +77,24 @@ export default function App() {
   const guess = (guess) => {
     if (guess.toLowerCase() === name) {
       setBright(1);
-      let data = JSON.parse(localStorage.getItem("pokeData"));
-      data.forEach((ele) => {
-        if (ele.name === name) {
-          ele.regular = true;
-        }
-      });
-      localStorage.setItem("pokeData", JSON.stringify(data));
+      let localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
+      if (shiny) {
+        localPokeDex.forEach((ele) => {
+          if (ele.name === name) {
+            ele.shiny = true;
+          }
+        });
+      } else {
+        localPokeDex.forEach((ele) => {
+          if (ele.name === name) {
+            ele.regular = true;
+          }
+        });
+      }
+
+      localStorage.setItem("pokeData", JSON.stringify(localPokeDex));
       setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
       setHint(2);
-      console.log("correct", "set local storage to true");
     }
   };
 
@@ -130,10 +137,10 @@ export default function App() {
                   style={{
                     filter: `brightness(${bright})`,
                     animation: `${
-                      picture ? "" : "pokeball"
-                    } 2s infinite alternate`,
+                      picture !== pokeball ? "" : "pokeball"
+                    } 1s infinite alternate`,
                   }}
-                  src={picture ? picture : pokeball}
+                  src={picture}
                 />
               </div>
             </div>

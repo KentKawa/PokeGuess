@@ -126,10 +126,6 @@
   height: 20%;
 }
 
-.guessButtons {
-  height: 100%;
-}
-
 #emote {
   font-size: 1.5em;
 }
@@ -158,7 +154,7 @@
 }
 
 #dataScreen {
-  height: 55%;
+  height: 60%;
   width: 100%;
   border-radius: 2%;
   border: 3px solid rgb(49, 49, 49);
@@ -202,10 +198,10 @@
 
 @keyframes pokeball {
   0% {
-    transform: rotate(-5deg);
+    transform: rotate(-2.5deg);
   }
   100% {
-    transform: rotate(5deg);
+    transform: rotate(2.5deg);
   }
 }
 

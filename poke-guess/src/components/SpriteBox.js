@@ -1,3 +1,5 @@
+import React from "react";
+
 const SpriteBox = (props) => {
   return (
     <div className="col-sm-3  spriteBox border border rounded">
@@ -20,4 +22,4 @@ const SpriteBox = (props) => {
   );
 };
 
-export default SpriteBox;
+export default React.memo(SpriteBox);
