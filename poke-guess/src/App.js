@@ -294,6 +294,7 @@ export default function App() {
               <button
                 id="systemButton"
                 className="col-sm-4 systemButton m-1 btn"
+                onClick={() => (window.location.href = "#about")}
               >
                 ABOUT
               </button>
@@ -342,6 +343,37 @@ export default function App() {
             );
           })}
         </div>
+      </div>
+      <div id="about">
+        <button
+          id="backButton"
+          className="btn m-1"
+          onClick={() => (window.location.href = "#pokeDex")}
+        >
+          <a
+            href="#pokeDex"
+            style={{ textDecoration: "none", color: "black", height: "100%" }}
+          >
+            Back
+          </a>
+        </button>
+        <h3>About</h3>
+        <p>
+          All data provided by <a href="https://pokeapi.co/">pokeapi.co</a>
+        </p>
+        <p>
+          Backgrounds by{" "}
+          <a href="https://www.deviantart.com/willdinomaster55">
+            Willdinomaster55
+          </a>
+        </p>
+
+        <p>
+          Music composed by{" "}
+          <a href="https://www.youtube.com/channel/UCL1zFMJb0sthwdAlGjGbdyg">
+            Quincas Moreira
+          </a>
+        </p>
       </div>
     </div>
   );
