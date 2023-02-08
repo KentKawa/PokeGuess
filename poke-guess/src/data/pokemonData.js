@@ -2509,16 +2509,6 @@ const pokeData = [
     shiny_sprite_img:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/251.png",
   },
-  {
-    id: 252,
-    name: "treecko",
-    regular: false,
-    shiny: false,
-    sprite_img:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png",
-    shiny_sprite_img:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/252.png",
-  },
 ];
 
 export default pokeData;

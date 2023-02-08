@@ -1,9 +1,9 @@
 import "./App.css";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import SpriteBox from "./components/SpriteBox";
 import pokeData from "./data/pokemonData";
 import pokeball from "./assets/pokeball.png";
+import bop from "./assets/Girasol-QuincasMoreira.mp3";
 import { useState, useEffect } from "react";
 
 export default function App() {
@@ -17,7 +17,9 @@ export default function App() {
     [generation, setGeneration] = useState("first"),
     [bright, setBright] = useState(1),
     [hint, setHint] = useState(0),
-    [guessText, setGuessText] = useState("");
+    [guessText, setGuessText] = useState(""),
+    [music, setMusic] = useState(true),
+    [audio] = useState(new Audio(bop));
 
   useEffect(() => {
     if (!localStorage.getItem("pokeData")) {
@@ -27,7 +29,7 @@ export default function App() {
     const localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
     if (fetchedPokemon) {
       localPokeDex.forEach((pokemon) => {
-        if (pokemon.name === name) {
+        if (pokemon.name === fetchedPokemon.name) {
           if (!pokemon.regular) {
             setShiny(() => false);
             setPicture(fetchedPokemon.sprites.front_default);
@@ -80,13 +82,13 @@ export default function App() {
       let localPokeDex = JSON.parse(localStorage.getItem("pokeData"));
       if (shiny) {
         localPokeDex.forEach((ele) => {
-          if (ele.name === name) {
+          if (ele.name === fetchedPokemon.name) {
             ele.shiny = true;
           }
         });
       } else {
         localPokeDex.forEach((ele) => {
-          if (ele.name === name) {
+          if (ele.name === fetchedPokemon.name) {
             ele.regular = true;
           }
         });
@@ -95,6 +97,17 @@ export default function App() {
       localStorage.setItem("pokeData", JSON.stringify(localPokeDex));
       setPokeDex(JSON.parse(localStorage.getItem("pokeData")));
       setHint(2);
+    }
+  };
+
+  const musicPlayer = () => {
+    audio.volume = 0.05;
+    audio.loop = true;
+    setMusic(!music);
+    if (music) {
+      audio.play();
+    } else {
+      audio.pause();
     }
   };
 
@@ -266,32 +279,69 @@ export default function App() {
               >
                 ENCOUNTER
               </button>
-              <button id="systemButton" className="col-sm-3  m-1 btn">
-                COLLECTION
+              <button
+                id="systemButton"
+                className="col-sm-4  m-1 btn"
+                onClick={() => (window.location.href = "#pokeCollection")}
+              >
+                <a
+                  href="#pokeCollection"
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  COLLECTION
+                </a>
               </button>
               <button
                 id="systemButton"
-                className="col-sm-3 systemButton m-1 btn"
+                className="col-sm-4 systemButton m-1 btn"
               >
                 ABOUT
+              </button>
+              <button
+                id="systemButton"
+                className="col-sm-2 m-1 btn"
+                onClick={musicPlayer}
+              >
+                <audio id="bop" loop={true}>
+                  Your browser does not support the audio element.
+                </audio>
+                <span aria-label="speaker" role="img" id="emote">
+                  {music ? "\u{1F508}" : "\u{1F50A}"}
+                </span>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="row m-0 p-5 pokeCollection">
-        {pokeDex.map((ele) => {
-          return (
-            <SpriteBox
-              img={ele.sprite_img}
-              shiny_img={ele.shiny_sprite_img}
-              shiny_bool={ele.shiny}
-              img_bool={ele.regular}
-              name={ele.name}
-              id={ele.id}
-            />
-          );
-        })}
+      <div id="pokeCollection" className="row m-0">
+        <div id="pokeCollectionBar" className="d-flex justify-content-end">
+          <button
+            id="backButton"
+            className="btn m-1"
+            onClick={() => (window.location.href = "#pokeDex")}
+          >
+            <a
+              href="#pokeDex"
+              style={{ textDecoration: "none", color: "black", height: "100%" }}
+            >
+              Back
+            </a>
+          </button>
+        </div>
+        <div className="row m-0 pokeCollection">
+          {pokeDex.map((ele) => {
+            return (
+              <SpriteBox
+                img={ele.sprite_img}
+                shiny_img={ele.shiny_sprite_img}
+                shiny_bool={ele.shiny}
+                img_bool={ele.regular}
+                name={ele.name}
+                id={ele.id}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

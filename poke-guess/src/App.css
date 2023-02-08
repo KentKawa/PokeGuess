@@ -4,6 +4,7 @@
   font-family: "Teko", sans-serif;
   text-align: center;
   background-image: url(./assets/grassPokemonBackground.png);
+  background-repeat: no-repeat;
 }
 
 .title {
@@ -187,7 +188,6 @@
 #systemButton {
   font-size: large;
   border: 2px solid black;
-  width: 40%;
   background-color: rgba(253, 225, 45);
 }
 
@@ -206,16 +206,34 @@
 }
 
 .pokeCollection {
-  height: 100vh;
+  height: 85vh;
   width: 100%;
   overflow: scroll;
-  background-image: url(./assets/homePokemonBackground.png);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 .pokeCollection::-webkit-scrollbar {
   display: none;
+}
+
+#pokeCollection {
+  height: 100vh;
+  padding: 0 2em 0;
+  background-image: url(./assets/homePokemonBackground.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#pokeCollectionBar {
+  height: 5vh;
+}
+
+#backButton {
+  font-size: large;
+  border: 2px solid black;
+  width: 20%;
+  background-color: rgba(253, 225, 45);
 }
 
 .spriteBox {
