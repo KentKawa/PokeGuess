@@ -344,7 +344,7 @@ export default function App() {
           })}
         </div>
       </div>
-      <div id="about">
+      <div id="about" className="p-3">
         <button
           id="backButton"
           className="btn m-1"
@@ -367,7 +367,6 @@ export default function App() {
             Willdinomaster55
           </a>
         </p>
-
         <p>
           Music composed by{" "}
           <a href="https://www.youtube.com/channel/UCL1zFMJb0sthwdAlGjGbdyg">
